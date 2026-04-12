@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Primeiro Saque | Teste a Raquete Antes de Comprar — SP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#1c1b1b",
+                        "outline-variant": "#454932",
+                        "surface-container": "#201f1f",
+                        "on-secondary-fixed-variant": "#82261b",
+                        "on-secondary": "#630f07",
+                        "on-tertiary-fixed": "#00174a",
+                        "tertiary": "#ffffff",
+                        "inverse-primary": "#576500",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#3a3939",
+                        "inverse-surface": "#e5e2e1",
+                        "on-error": "#690005",
+                        "on-primary-container": "#5d6b00",
+                        "on-primary-fixed": "#191e00",
+                        "surface": "#131313",
+                        "on-secondary-container": "#ff9f90",
+                        "tertiary-fixed": "#dbe1ff",
+                        "secondary-fixed-dim": "#ffb4a8",
+                        "on-tertiary": "#002a76",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-container": "#dbe1ff",
+                        "on-primary": "#2c3400",
+                        "primary": "#ffffff",
+                        "tertiary-fixed-dim": "#b3c5ff",
+                        "on-primary-fixed-variant": "#414c00",
+                        "on-surface-variant": "#c6c9ab",
+                        "background": "#131313",
+                        "on-background": "#e5e2e1",
+                        "on-secondary-fixed": "#410000",
+                        "surface-container-highest": "#353534",
+                        "surface-container-high": "#2a2a2a",
+                        "primary-fixed": "#d2f000",
+                        "error-container": "#93000a",
+                        "surface-variant": "#353534",
+                        "on-tertiary-container": "#3d60ba",
+                        "surface-tint": "#b8d300",
+                        "primary-container": "#d2f000",
+                        "primary-fixed-dim": "#b8d300",
+                        "inverse-on-surface": "#313030",
+                        "on-surface": "#e5e2e1",
+                        "secondary-fixed": "#ffdad4",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-dim": "#131313",
+                        "secondary": "#ffb4a8",
+                        "secondary-container": "#85281d",
+                        "outline": "#909378",
+                        "on-tertiary-fixed-variant": "#17409a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Epilogue"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(19, 19, 19, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        html { scroll-behavior: smooth; }
+        section[id] { scroll-margin-top: 80px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 glass-nav border-b border-[#454932]/15">
+<div class="flex justify-between items-center px-4 md:px-8 py-4 max-w-full mx-auto gap-3">
+<span class="text-lg md:text-xl font-black tracking-tighter text-[#DFFF00] uppercase font-headline">Primeiro Saque</span>
+<div class="hidden md:flex gap-8 items-center font-headline font-bold tracking-tight">
+<a class="text-[#E5E2E1] hover:text-[#DFFF00] transition-colors duration-300" href="#catalogo">Catálogo</a>
+<a class="text-[#E5E2E1] hover:text-[#DFFF00] transition-colors duration-300" href="#como-funciona">Processo</a>
+<a class="text-[#E5E2E1] hover:text-[#DFFF00] transition-colors duration-300" href="#precos">Preços</a>
+<a class="text-[#E5E2E1] hover:text-[#DFFF00] transition-colors duration-300" href="#duvidas">Dúvidas</a>
+</div>
+<div class="flex items-center gap-2">
+<button data-open-reserve class="bg-[#DFFF00] text-[#2c3400] px-4 md:px-6 py-2 font-headline font-bold uppercase text-xs md:text-sm tracking-widest scale-95 active:scale-90 transition-transform">
+            Reservar
+        </button>
+<button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center text-on-surface" aria-label="Abrir menu">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+<!-- Mobile drawer -->
+<div id="mobile-menu" class="hidden md:hidden border-t border-[#454932]/15 glass-nav">
+<div class="flex flex-col px-4 py-2 font-headline font-bold tracking-tight">
+<a class="py-3 text-[#E5E2E1] hover:text-[#DFFF00] border-b border-[#454932]/15" href="#catalogo">Catálogo</a>
+<a class="py-3 text-[#E5E2E1] hover:text-[#DFFF00] border-b border-[#454932]/15" href="#como-funciona">Processo</a>
+<a class="py-3 text-[#E5E2E1] hover:text-[#DFFF00] border-b border-[#454932]/15" href="#precos">Preços</a>
+<a class="py-3 text-[#E5E2E1] hover:text-[#DFFF00]" href="#duvidas">Dúvidas</a>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[600px] md:h-[921px] flex items-center overflow-hidden py-24 md:py-0">
+<div class="absolute inset-0 z-0">
+<img alt="Premium Tennis Court" class="w-full h-full object-cover opacity-40" data-alt="high-end tennis court at dusk with dramatic lighting reflecting off the surface and professional rackets in the foreground" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUnaVLm1c09L2xltQTVrjb6B0HYeDpgTy-chSRlljRZTDrMmpP6Ug8G2LG9DCtU5vFCeKM_viY_jrrf2yagFpYiFyJB2XvzDQcwjST5JSvJzG_XrDCSsgDqMwB60gP6RnJRq7CgVL0tK7_dJLqRGoRRjDVFhxv-5iZ9D8nO6rP-hoR8w1aI0Nsj7sRQi7cQH-EFOo9zuT0_XCBGpteKme6g_2Vkgrd2a9QouIZJKJhDP5Wzu0DBW26EPwr13mVoR4-dbVDEEe_Qlg"/>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+</div>
+<div class="container mx-auto px-8 relative z-10">
+<div class="max-w-3xl">
+<span class="text-[#DFFF00] font-label uppercase tracking-[0.3em] text-sm mb-4 block">Decisão antes da compra</span>
+<h1 class="text-5xl sm:text-6xl md:text-8xl font-headline font-black text-on-surface leading-tight mb-6 tracking-tighter uppercase">
+                    Teste antes <br/><span class="text-[#DFFF00]">de comprar</span>
+</h1>
+<p class="text-base md:text-xl text-on-surface-variant max-w-xl mb-10 font-body leading-relaxed">
+                    Uma raquete nova custa entre R$ 1.500 e R$ 2.500. Erre a escolha e você perde muito dinheiro — e quase sempre o jogo. Teste por uma semana, em quadra de verdade, antes de decidir.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button data-open-reserve class="bg-[#DFFF00] text-[#2c3400] px-6 md:px-10 py-4 md:py-5 text-sm md:text-base font-headline font-black uppercase tracking-widest hover:shadow-[0_0_30px_rgba(223,255,0,0.3)] transition-all">
+                        Reservar meu teste
+                    </button>
+<a href="#como-funciona" class="border border-[#454932]/30 text-on-surface px-6 md:px-10 py-4 md:py-5 text-sm md:text-base font-headline font-black uppercase tracking-widest hover:bg-surface-container transition-all text-center">
+                        Como funciona
+                    </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Problem Section -->
+<section class="py-24 bg-surface px-4 md:px-8">
+<div class="container mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-1">
+<div class="p-6 md:p-12 bg-surface-container border-l-2 border-[#E26D5C]">
+<span class="material-symbols-outlined text-[#E26D5C] text-4xl mb-6">payments</span>
+<h3 class="text-2xl font-headline font-extrabold mb-4 uppercase">R$ 500 a R$ 1.000 jogados fora</h3>
+<p class="text-on-surface-variant leading-relaxed">É o que custa, em média, descobrir que a raquete não combinou com seu jogo — e ter que revender por metade do preço.</p>
+</div>
+<div class="p-6 md:p-12 bg-surface-container-high border-l-2 border-[#2B50AA]">
+<span class="material-symbols-outlined text-[#2B50AA] text-4xl mb-6">science</span>
+<h3 class="text-2xl font-headline font-extrabold mb-4 uppercase">Sem Teste Real</h3>
+<p class="text-on-surface-variant leading-relaxed">Bater bola 5 minutos na loja não revela como a raquete se comporta no terceiro set sob pressão.</p>
+</div>
+<div class="p-6 md:p-12 bg-surface-container-highest border-l-2 border-[#DFFF00]">
+<span class="material-symbols-outlined text-[#DFFF00] text-4xl mb-6">fitness_center</span>
+<h3 class="text-2xl font-headline font-extrabold mb-4 uppercase">Cada Braço é Único</h3>
+<p class="text-on-surface-variant leading-relaxed">Peso, balanço e rigidez impactam sua saúde. O teste real previne lesões como o tennis elbow.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- How it Works Section -->
+<section id="como-funciona" class="py-20 md:py-32 bg-surface-container-lowest px-4 md:px-8">
+<div class="container mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+<h2 class="text-4xl md:text-5xl font-headline font-black uppercase tracking-tighter max-w-md">O Caminho para a Decisão Certa</h2>
+<p class="text-on-surface-variant max-w-sm font-body">Processo otimizado para você focar apenas no seu backhand.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="relative group">
+<span class="text-8xl font-headline font-black text-surface-container-highest absolute -top-12 -left-4 z-0 opacity-50">01</span>
+<div class="relative z-10 pt-4">
+<h4 class="text-xl font-headline font-bold mb-3 uppercase tracking-tight">Escolha</h4>
+<p class="text-on-surface-variant text-sm">Selecione entre os modelos mais recentes das grandes marcas no catálogo.</p>
+</div>
+</div>
+<div class="relative group">
+<span class="text-8xl font-headline font-black text-surface-container-highest absolute -top-12 -left-4 z-0 opacity-50">02</span>
+<div class="relative z-10 pt-4">
+<h4 class="text-xl font-headline font-bold mb-3 uppercase tracking-tight">Receba na Segunda</h4>
+<p class="text-on-surface-variant text-sm">Nosso concierge entrega no seu endereço em SP com toda comodidade.</p>
+</div>
+</div>
+<div class="relative group">
+<span class="text-8xl font-headline font-black text-surface-container-highest absolute -top-12 -left-4 z-0 opacity-50">03</span>
+<div class="relative z-10 pt-4">
+<h4 class="text-xl font-headline font-bold mb-3 uppercase tracking-tight">Jogue a Semana Toda</h4>
+<p class="text-on-surface-variant text-sm">Leve para suas aulas e jogos. Teste em diferentes condições de quadra.</p>
+</div>
+</div>
+<div class="relative group">
+<span class="text-8xl font-headline font-black text-surface-container-highest absolute -top-12 -left-4 z-0 opacity-50">04</span>
+<div class="relative z-10 pt-4">
+<h4 class="text-xl font-headline font-bold mb-3 uppercase tracking-tight">Decida com Segurança</h4>
+<p class="text-on-surface-variant text-sm">Retiramos o equipamento. Você compra sua raquete sabendo exatamente o que está levando.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Racket Catalog Section -->
+<section id="catalogo" class="py-20 md:py-32 bg-surface px-4 md:px-8 overflow-hidden">
+<div class="container mx-auto">
+<div class="mb-16">
+<h2 class="text-4xl md:text-5xl font-headline font-black uppercase tracking-tighter mb-4">Catálogo</h2>
+<div class="h-1 w-24 bg-[#DFFF00]"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Racket Card 1 -->
+<div data-racket="Babolat Pure Aero 98 Gen9" class="bg-surface-container p-6 group hover:bg-surface-container-high transition-all duration-500">
+<div class="relative mb-8 aspect-[3/4] overflow-hidden">
+<img alt="Babolat Pure Aero" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" src="images/babolat-pure-aero-98.jpg"/>
+<div class="absolute top-4 left-4 bg-[#DFFF00] text-[#2c3400] px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Disponível</div>
+</div>
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="font-headline font-extrabold text-xl uppercase tracking-tight">Babolat Pure Aero 98 Gen9</h3>
+<p class="text-xs text-[#2B50AA] font-bold uppercase tracking-widest mt-1">A raquete do Alcaraz · rainha do spin</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">Aro: 98</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">305g</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">16x20</span>
+</div>
+<button data-open-reserve class="w-full border border-[#454932]/30 py-3 font-headline font-bold text-sm uppercase tracking-widest hover:bg-[#DFFF00] hover:text-[#2c3400] transition-colors">Quero testar</button>
+</div>
+<!-- Racket Card 2 -->
+<div data-racket="Wilson Blade 98 18x20 V9" class="bg-surface-container p-6 group hover:bg-surface-container-high transition-all duration-500">
+<div class="relative mb-8 aspect-[3/4] overflow-hidden">
+<img alt="Wilson Blade 98" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" src="images/wilson-blade-98.jpg"/>
+<div class="absolute top-4 left-4 bg-[#DFFF00] text-[#2c3400] px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Disponível</div>
+</div>
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="font-headline font-extrabold text-xl uppercase tracking-tight">Wilson Blade 98 V9</h3>
+<p class="text-xs text-[#2B50AA] font-bold uppercase tracking-widest mt-1">A mais usada no Tour · sensibilidade e controle</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 mb-6"><span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">Aro: 98</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">305g</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">18x20</span></div>
+<button data-open-reserve class="w-full border border-[#454932]/30 py-3 font-headline font-bold text-sm uppercase tracking-widest hover:bg-[#DFFF00] hover:text-[#2c3400] transition-colors">Quero testar</button>
+</div>
+<!-- Racket Card 3 -->
+<div data-racket="Head Speed MP 2026" class="bg-surface-container p-6 group hover:bg-surface-container-high transition-all duration-500">
+<div class="relative mb-8 aspect-[3/4] overflow-hidden">
+<img alt="Head Speed MP" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" src="images/head-speed-mp.jpg"/>
+<div class="absolute top-4 left-4 bg-[#DFFF00] text-[#2c3400] px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Disponível</div>
+</div>
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="font-headline font-extrabold text-xl uppercase tracking-tight">Head Speed MP 2026</h3>
+<p class="text-xs text-[#2B50AA] font-bold uppercase tracking-widest mt-1">A raquete do Sinner · potência e controle</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">Aro: 100</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">300g</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">16x19</span>
+</div>
+<button data-open-reserve class="w-full border border-[#454932]/30 py-3 font-headline font-bold text-sm uppercase tracking-widest hover:bg-[#DFFF00] hover:text-[#2c3400] transition-colors">Quero testar</button>
+</div>
+<!-- Racket Card 4 -->
+<div data-racket="Yonex VCORE 98 8th Gen" class="bg-surface-container p-6 group hover:bg-surface-container-high transition-all duration-500">
+<div class="relative mb-8 aspect-[3/4] overflow-hidden">
+<img alt="Yonex VCORE 98" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" src="images/vcore-98.jpg"/>
+<div class="absolute top-4 left-4 bg-[#DFFF00] text-[#2c3400] px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Disponível</div>
+</div>
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="font-headline font-extrabold text-xl uppercase tracking-tight">Yonex VCORE 98 8th Gen</h3>
+<p class="text-xs text-[#2B50AA] font-bold uppercase tracking-widest mt-1">A raquete do João Fonseca · a mais hypada no Brasil</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">Aro: 98</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">305g</span>
+<span class="bg-surface-container-highest px-2 py-1 text-[10px] border-l-2 border-[#E26D5C] font-bold uppercase">16x19</span>
+</div>
+<button data-open-reserve class="w-full border border-[#454932]/30 py-3 font-headline font-bold text-sm uppercase tracking-widest hover:bg-[#DFFF00] hover:text-[#2c3400] transition-colors">Quero testar</button>
+</div>
+</div>
+</div>
+</section>
+<!-- What's Included -->
+<section id="precos" class="py-20 md:py-32 bg-surface-container-lowest px-4 md:px-8">
+<div class="container mx-auto">
+<div class="flex flex-col lg:flex-row gap-12 md:gap-16 items-start">
+<div class="lg:w-1/2">
+<span class="text-[#DFFF00] font-label uppercase tracking-[0.3em] text-sm mb-4 block">Serviço Concierge</span>
+<h2 class="text-4xl md:text-5xl font-headline font-black uppercase tracking-tighter mb-8 leading-none">Tudo incluso. <br/><span class="text-[#E26D5C]">Zero atrito.</span></h2>
+<ul class="space-y-6">
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#DFFF00]">check_circle</span>
+<span class="text-lg font-medium">Raquetes impecáveis, sempre em estado de novas</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#DFFF00]">check_circle</span>
+<span class="text-lg font-medium">Cordas novas em todo teste (tensão personalizável)</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#DFFF00]">check_circle</span>
+<span class="text-lg font-medium">Overgrip novo instalado a cada entrega</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#DFFF00]">check_circle</span>
+<span class="text-lg font-medium">Entrega e retirada inclusas em toda SP Capital</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#DFFF00]">check_circle</span>
+<span class="text-lg font-medium">Sem burocracia. Sem fidelidade.</span>
+</li>
+</ul>
+</div>
+<div class="lg:w-1/2 w-full">
+<div class="mb-8">
+<span class="text-sm font-bold uppercase tracking-[0.3em] text-on-surface-variant block mb-2">Escolha quantas quiser testar</span>
+<p class="text-on-surface-variant text-sm">Comparar modelos lado a lado acelera sua decisão.</p>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<!-- Plano 1 -->
+<button data-open-reserve data-tier="1" class="text-left bg-surface p-6 border border-[#454932]/20 hover:border-[#DFFF00]/40 transition-all group">
+<div class="flex items-center justify-between">
+<div>
+<span class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">1 raquete</span>
+<span class="block font-headline font-bold text-lg uppercase tracking-tight">Teste Único</span>
+</div>
+<div class="text-right">
+<span class="block text-3xl font-headline font-black text-on-surface">R$ 250</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">por semana</span>
+</div>
+</div>
+</button>
+<!-- Plano 2 -->
+<button data-open-reserve data-tier="2" class="text-left bg-surface p-6 border border-[#454932]/20 hover:border-[#DFFF00]/40 transition-all group">
+<div class="flex items-center justify-between">
+<div>
+<span class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">2 raquetes</span>
+<span class="block font-headline font-bold text-lg uppercase tracking-tight">Comparativo</span>
+<span class="block text-[10px] text-[#E26D5C] font-bold uppercase tracking-widest mt-1">Economize R$ 50</span>
+</div>
+<div class="text-right">
+<span class="block text-3xl font-headline font-black text-on-surface">R$ 450</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">por semana</span>
+</div>
+</div>
+</button>
+<!-- Plano 3 - destaque -->
+<button data-open-reserve data-tier="3" class="text-left bg-surface p-6 border-2 border-[#DFFF00] hover:shadow-[0_0_30px_rgba(223,255,0,0.15)] transition-all relative">
+<span class="absolute -top-2 right-6 bg-[#DFFF00] text-[#2c3400] px-2 py-0.5 text-[9px] font-black uppercase tracking-widest">Mais escolhido</span>
+<div class="flex items-center justify-between">
+<div>
+<span class="block text-xs font-bold uppercase tracking-widest text-[#DFFF00] mb-1">3 raquetes</span>
+<span class="block font-headline font-bold text-lg uppercase tracking-tight">Decisão Final</span>
+<span class="block text-[10px] text-[#E26D5C] font-bold uppercase tracking-widest mt-1">Economize R$ 150</span>
+</div>
+<div class="text-right">
+<span class="block text-3xl font-headline font-black text-[#DFFF00]">R$ 600</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">por semana</span>
+</div>
+</div>
+</button>
+</div>
+<p class="mt-6 text-[11px] uppercase tracking-widest text-on-surface-variant opacity-60 text-center">Pagamento apenas após confirmação da reserva</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Social Proof -->
+<section class="py-24 bg-surface border-y border-[#454932]/15">
+<div class="container mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="text-center">
+<div class="flex justify-center mb-6 text-[#DFFF00]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-lg mb-4">"Testei a Pure Aero 98 por uma semana antes de comprar. Descobri que não era pra mim — acabei ficando com a Blade. Me poupou de jogar R$ 2 mil fora."</p>
+<cite class="not-italic font-headline font-bold text-sm uppercase tracking-widest">— Rafael M., Pinheiros</cite>
+</div>
+<div class="text-center">
+<div class="flex justify-center mb-6 text-[#DFFF00]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-lg mb-4">"Peguei 3 raquetes pra comparar — Blade, VCORE e Speed. Em três treinos sabia qual era a minha. Muito mais fácil do que ficar chutando em loja."</p>
+<cite class="not-italic font-headline font-bold text-sm uppercase tracking-widest">— Juliana S., Vila Madalena</cite>
+</div>
+<div class="text-center">
+<div class="flex justify-center mb-6 text-[#DFFF00]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-lg mb-4">"Mando todos os meus alunos testarem antes de comprar. A diferença entre uma 16x19 e uma 18x20 só se sente em quadra, não na loja."</p>
+<cite class="not-italic font-headline font-bold text-sm uppercase tracking-widest">— Prof. Fábio A., Clube Paineiras</cite>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section id="duvidas" class="py-20 md:py-32 px-4 md:px-8">
+<div class="container mx-auto max-w-3xl">
+<h2 class="text-3xl md:text-4xl font-headline font-black uppercase tracking-tighter mb-16 text-center">Dúvidas Frequentes</h2>
+<div class="space-y-4">
+<details class="faq-item bg-surface-container p-6 group">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="text-lg font-headline font-bold uppercase tracking-tight">Qual o período mínimo de teste?</span>
+<span class="material-symbols-outlined text-[#DFFF00] transition-transform group-open:rotate-45">add</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">O teste é semanal. Uma semana já é tempo suficiente pra sentir a raquete em diferentes condições — aulas, jogos e treinos. Se quiser mais tempo, dá pra estender.</p>
+</details>
+<details class="faq-item bg-surface-container p-6 group">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="text-lg font-headline font-bold uppercase tracking-tight">A raquete já vem encordoada?</span>
+<span class="material-symbols-outlined text-[#DFFF00] transition-transform group-open:rotate-45">add</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Sim. Toda raquete chega com cordas novas e overgrip novo. A tensão padrão é 50 libras, mas você pode pedir uma tensão específica no momento da solicitação.</p>
+</details>
+<details class="faq-item bg-surface-container p-6 group">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="text-lg font-headline font-bold uppercase tracking-tight">Atendem fora de São Paulo Capital?</span>
+<span class="material-symbols-outlined text-[#DFFF00] transition-transform group-open:rotate-45">add</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Por enquanto atendemos apenas SP Capital, com entrega e retirada inclusas. Se você estiver em outra região, deixe sua solicitação — avaliamos demanda por bairro pra expandir.</p>
+</details>
+<details class="faq-item bg-surface-container p-6 group">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="text-lg font-headline font-bold uppercase tracking-tight">E se eu quebrar a raquete ou as cordas?</span>
+<span class="material-symbols-outlined text-[#DFFF00] transition-transform group-open:rotate-45">add</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Cordas arrebentam — é normal, sem custo extra. Quebrar o aro é raro, mas se acontecer a cobertura é conversada caso a caso. Sem burocracia, sem letra miúda.</p>
+</details>
+<details class="faq-item bg-surface-container p-6 group">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="text-lg font-headline font-bold uppercase tracking-tight">Se eu decidir comprar a raquete depois?</span>
+<span class="material-symbols-outlined text-[#DFFF00] transition-transform group-open:rotate-45">add</span>
+</summary>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Ótimo — é pra isso que existimos. Te ajudamos a fechar com a loja parceira de sua preferência. A escolha e a compra ficam com você; o que fazemos é garantir que ela seja acertada.</p>
+</details>
+</div>
+</div>
+</section>
+<!-- Final CTA Section -->
+<section class="py-20 md:py-32 bg-surface px-4 md:px-8 text-center border-t border-[#454932]/15">
+<div class="container mx-auto max-w-4xl">
+<h2 class="text-4xl md:text-7xl font-headline font-black uppercase tracking-tighter mb-8 leading-tight">
+                Sua próxima raquete <br/><span class="text-[#DFFF00]">está esperando</span>
+</h2>
+<p class="text-xl text-on-surface-variant mb-12 max-w-2xl mx-auto">
+                Não arrisque R$ 2.000 em uma escolha às cegas. Teste em quadra, compare modelos e decida com segurança.
+            </p>
+<button data-open-reserve class="bg-[#DFFF00] text-[#2c3400] px-12 py-5 font-headline font-bold uppercase text-lg tracking-widest scale-100 hover:scale-105 active:scale-95 transition-transform shadow-[0_0_30px_rgba(223,255,0,0.2)]">
+                Reservar meu teste
+            </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#0E0E0E] w-full py-12 px-8 border-t border-[#454932]/15">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col gap-2">
+<span class="text-lg font-bold text-[#DFFF00] font-headline uppercase tracking-tighter">Primeiro Saque</span>
+<p class="text-[#E5E2E1]/60 font-label text-sm">© 2024 Primeiro Saque. Todos os direitos reservados.</p>
+</div>
+<div class="flex gap-8 font-label text-sm tracking-wide">
+<a class="text-[#E5E2E1]/60 hover:text-[#DFFF00] transition-colors" href="#">Termos de Uso</a>
+<a class="text-[#E5E2E1]/60 hover:text-[#DFFF00] transition-colors" href="#">Privacidade</a>
+</div>
+</div>
+</footer>
+<!-- Reserve Modal -->
+<div id="reserve-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4" aria-modal="true" role="dialog">
+<div data-modal-backdrop class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+<div class="relative bg-surface-container border border-[#454932]/30 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+<!-- Form state -->
+<div id="reserve-form-container" class="p-8 md:p-12">
+<button data-close-modal class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" aria-label="Fechar">
+<span class="material-symbols-outlined">close</span>
+</button>
+<span class="text-[#DFFF00] font-label uppercase tracking-[0.3em] text-xs mb-3 block">Reserve seu teste</span>
+<h3 class="text-3xl md:text-4xl font-headline font-black uppercase tracking-tighter mb-2">Teste em quadra antes de decidir</h3>
+<p class="text-on-surface-variant text-sm mb-8">Preencha os dados e montamos sua reserva. Pagamento só após confirmação.</p>
+<form id="reserve-form" class="space-y-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Nome completo</label>
+<input name="nome" type="text" required class="w-full bg-surface px-4 py-3 border border-[#454932]/30 focus:border-[#DFFF00] focus:outline-none text-on-surface font-body"/>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">WhatsApp</label>
+<input id="whatsapp-input" name="whatsapp" type="tel" required placeholder="(11) 99999-9999" class="w-full bg-surface px-4 py-3 border border-[#454932]/30 focus:border-[#DFFF00] focus:outline-none text-on-surface font-body"/>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Quais raquetes você quer testar?</label>
+<div id="racket-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+<label class="flex items-center gap-3 bg-surface px-4 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors">
+<input type="checkbox" name="raquetes" value="Babolat Pure Aero 98 Gen9" class="racket-check accent-[#DFFF00]"/>
+<span class="text-sm font-medium">Babolat Pure Aero 98 Gen9</span>
+</label>
+<label class="flex items-center gap-3 bg-surface px-4 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors">
+<input type="checkbox" name="raquetes" value="Wilson Blade 98 18x20 V9" class="racket-check accent-[#DFFF00]"/>
+<span class="text-sm font-medium">Wilson Blade 98 V9</span>
+</label>
+<label class="flex items-center gap-3 bg-surface px-4 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors">
+<input type="checkbox" name="raquetes" value="Head Speed MP 2026" class="racket-check accent-[#DFFF00]"/>
+<span class="text-sm font-medium">Head Speed MP 2026</span>
+</label>
+<label class="flex items-center gap-3 bg-surface px-4 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors">
+<input type="checkbox" name="raquetes" value="Yonex VCORE 98 8th Gen" class="racket-check accent-[#DFFF00]"/>
+<span class="text-sm font-medium">Yonex VCORE 98 8th Gen</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Quando gostaria de começar?</label>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+<label class="flex items-center justify-center gap-2 bg-surface px-3 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors text-center">
+<input type="radio" name="urgencia" value="Esta semana" required class="accent-[#DFFF00]"/>
+<span class="text-xs font-medium">Esta semana</span>
+</label>
+<label class="flex items-center justify-center gap-2 bg-surface px-3 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors text-center">
+<input type="radio" name="urgencia" value="Próximas 2 semanas" class="accent-[#DFFF00]"/>
+<span class="text-xs font-medium">Próximas 2 semanas</span>
+</label>
+<label class="flex items-center justify-center gap-2 bg-surface px-3 py-3 border border-[#454932]/30 cursor-pointer hover:border-[#DFFF00]/40 has-[:checked]:border-[#DFFF00] has-[:checked]:bg-[#DFFF00]/5 transition-colors text-center">
+<input type="radio" name="urgencia" value="Só avaliando" class="accent-[#DFFF00]"/>
+<span class="text-xs font-medium">Só avaliando</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Bairro em SP</label>
+<input name="bairro" type="text" required placeholder="Ex: Pinheiros" class="w-full bg-surface px-4 py-3 border border-[#454932]/30 focus:border-[#DFFF00] focus:outline-none text-on-surface font-body"/>
+</div>
+<!-- Total calculado -->
+<div id="total-box" class="bg-surface p-5 border border-[#454932]/30 flex items-center justify-between">
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Total da semana</span>
+<span id="total-detail" class="block text-xs text-on-surface-variant mt-1">Selecione ao menos 1 raquete</span>
+</div>
+<span id="total-value" class="text-3xl font-headline font-black text-[#DFFF00]">R$ 0</span>
+</div>
+<div id="form-error" class="hidden text-sm text-[#E26D5C] font-medium"></div>
+<button type="submit" id="submit-btn" class="w-full bg-[#DFFF00] text-[#2c3400] py-4 font-headline font-black uppercase tracking-widest hover:shadow-[0_0_30px_rgba(223,255,0,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+Confirmar solicitação
+</button>
+<p class="text-center text-[10px] uppercase tracking-widest text-on-surface-variant opacity-60">Sem burocracia · Sem fidelidade · Sem cobrança agora</p>
+</form>
+</div>
+<!-- Success state -->
+<div id="reserve-success" class="hidden p-8 md:p-12 text-center">
+<div class="w-16 h-16 bg-[#DFFF00]/10 border border-[#DFFF00]/30 rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined text-[#DFFF00] text-3xl">check</span>
+</div>
+<h3 class="text-2xl md:text-3xl font-headline font-black uppercase tracking-tighter mb-4">Recebemos seu interesse</h3>
+<p class="text-on-surface-variant leading-relaxed mb-8 max-w-md mx-auto">Devido ao alto volume de solicitações, nossa equipe está organizando os atendimentos por ordem de chegada — em breve retornaremos com os próximos passos.</p>
+<button data-close-modal class="bg-[#DFFF00] text-[#2c3400] px-8 py-3 font-headline font-bold uppercase tracking-widest hover:shadow-[0_0_30px_rgba(223,255,0,0.3)] transition-all">
+Fechar
+</button>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  const PRICES = { 1: 250, 2: 450, 3: 600 };
+  const PER_EXTRA = 200; // 4+ raquetes: 600 + 200 por raquete adicional
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyMgqZaqDY1uRQtJDuqD_QVxX7vhIYNGsLVY2QO-VD53gG8BS-ntkf5TnRM5KnpZExCJw/exec'; // <-- cole aqui a URL do Google Apps Script Web App quando tiver
+
+  const modal = document.getElementById('reserve-modal');
+  const formContainer = document.getElementById('reserve-form-container');
+  const successContainer = document.getElementById('reserve-success');
+  const form = document.getElementById('reserve-form');
+  const errorBox = document.getElementById('form-error');
+  const submitBtn = document.getElementById('submit-btn');
+  const totalValue = document.getElementById('total-value');
+  const totalDetail = document.getElementById('total-detail');
+  const whatsappInput = document.getElementById('whatsapp-input');
+
+  function openModal(preselect){
+    formContainer.classList.remove('hidden');
+    successContainer.classList.add('hidden');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    if (preselect) {
+      const cb = form.querySelector(`input[name="raquetes"][value="${preselect}"]`);
+      if (cb && !cb.checked) { cb.checked = true; updateTotal(); }
+    }
+  }
+  function closeModal(){
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function calcPrice(n){
+    if (n <= 0) return 0;
+    if (n <= 3) return PRICES[n];
+    return PRICES[3] + (n - 3) * PER_EXTRA;
+  }
+  function updateTotal(){
+    const checked = form.querySelectorAll('input[name="raquetes"]:checked').length;
+    const price = calcPrice(checked);
+    totalValue.textContent = 'R$ ' + price;
+    if (checked === 0) totalDetail.textContent = 'Selecione ao menos 1 raquete';
+    else if (checked === 1) totalDetail.textContent = '1 raquete · teste único';
+    else if (checked === 2) totalDetail.textContent = '2 raquetes · economia de R$ 50';
+    else if (checked === 3) totalDetail.textContent = '3 raquetes · economia de R$ 150';
+    else totalDetail.textContent = checked + ' raquetes · pacote estendido';
+  }
+
+  function maskPhone(v){
+    v = v.replace(/\D/g,'').slice(0,11);
+    if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{0,4}).*/,'($1) $2-$3');
+    if (v.length > 6) return v.replace(/(\d{2})(\d{4})(\d{0,4}).*/,'($1) $2-$3');
+    if (v.length > 2) return v.replace(/(\d{2})(\d{0,5}).*/,'($1) $2');
+    if (v.length > 0) return v.replace(/(\d{0,2}).*/,'($1');
+    return '';
+  }
+
+  // Abrir via qualquer CTA
+  document.querySelectorAll('[data-open-reserve]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const card = el.closest('[data-racket]');
+      openModal(card ? card.getAttribute('data-racket') : null);
+    });
+  });
+
+  // Fechar
+  document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
+  document.querySelector('[data-modal-backdrop]').addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+  // Total ao vivo
+  form.querySelectorAll('input[name="raquetes"]').forEach(cb => cb.addEventListener('change', updateTotal));
+
+  // Máscara WhatsApp
+  whatsappInput.addEventListener('input', (e) => { e.target.value = maskPhone(e.target.value); });
+
+  // Submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.classList.add('hidden');
+    const raquetes = [...form.querySelectorAll('input[name="raquetes"]:checked')].map(c => c.value);
+    if (raquetes.length === 0) {
+      errorBox.textContent = 'Selecione ao menos uma raquete para testar.';
+      errorBox.classList.remove('hidden');
+      return;
+    }
+    const data = {
+      nome: form.nome.value.trim(),
+      whatsapp: form.whatsapp.value.trim(),
+      raquetes: raquetes.join(', '),
+      qtd_raquetes: raquetes.length,
+      urgencia: form.urgencia.value,
+      bairro: form.bairro.value.trim(),
+      valor_total: calcPrice(raquetes.length),
+      timestamp: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+    };
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+    try {
+      if (ENDPOINT) {
+        await fetch(ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(data),
+        });
+      } else {
+        console.log('[Reserva simulada — endpoint não configurado]', data);
+        await new Promise(r => setTimeout(r, 600));
+      }
+      formContainer.classList.add('hidden');
+      successContainer.classList.remove('hidden');
+      form.reset();
+      updateTotal();
+    } catch (err) {
+      errorBox.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+      errorBox.classList.remove('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirmar solicitação';
+    }
+  });
+
+  updateTotal();
+
+  // Mobile menu
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileBtn && mobileMenu) {
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      const icon = mobileBtn.querySelector('.material-symbols-outlined');
+      icon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      mobileBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
+    }));
+  }
+})();
+</script>
+</body></html>
