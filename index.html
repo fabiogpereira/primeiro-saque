@@ -4,6 +4,14 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Primeiro Saque | Teste a Raquete Antes de Comprar — SP</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V66JXP8H5L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V66JXP8H5L');
+</script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -692,6 +700,14 @@ Fechar
       }
       formContainer.classList.add('hidden');
       successContainer.classList.remove('hidden');
+      if (typeof gtag === 'function') {
+        gtag('event', 'form_submit', {
+          qtd_raquetes: data.qtd_raquetes,
+          valor_total: data.valor_total,
+          urgencia: data.urgencia,
+          bairro: data.bairro
+        });
+      }
       form.reset();
       updateTotal();
     } catch (err) {
