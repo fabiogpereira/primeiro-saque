@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://primeirosaque.com.br/sitemap.xml
