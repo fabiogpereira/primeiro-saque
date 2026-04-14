@@ -437,7 +437,7 @@
 </div>
 </section>
 <!-- Social Proof -->
-<section class="py-24 bg-surface border-y border-[#454932]/15">
+<section id="depoimentos" class="py-24 bg-surface border-y border-[#454932]/15">
 <div class="container mx-auto px-8">
 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
 <div class="text-center">
@@ -520,7 +520,7 @@
 </div>
 </section>
 <!-- Final CTA Section -->
-<section class="py-20 md:py-32 bg-surface px-4 md:px-8 text-center border-t border-[#454932]/15">
+<section id="reservar" class="py-20 md:py-32 bg-surface px-4 md:px-8 text-center border-t border-[#454932]/15">
 <div class="container mx-auto max-w-4xl">
 <h2 class="text-4xl md:text-7xl font-headline font-black uppercase tracking-tighter mb-8 leading-tight">
                 Sua próxima raquete <br/><span class="text-[#DFFF00]">está esperando</span>
@@ -755,8 +755,9 @@ Fechar
       successContainer.classList.remove('hidden');
       if (typeof gtag === 'function') {
         gtag('event', 'form_submit', {
+          value: data.valor_total,
+          currency: 'BRL',
           qtd_raquetes: data.qtd_raquetes,
-          valor_total: data.valor_total,
           urgencia: data.urgencia,
           bairro: data.bairro
         });
