@@ -1,0 +1,26 @@
+# Raw lead exports and anything else with personal data.
+# Never commit the contents of this directory.
+data/private/
+
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Build / tooling caches
+.cache/
+coverage/
+test-results/
+playwright-report/
