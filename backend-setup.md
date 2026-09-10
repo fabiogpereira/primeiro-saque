@@ -1,78 +1,200 @@
-# Setup do backend — Google Apps Script
+# Backend Setup — Google Apps Script
 
-Tempo estimado: **5 minutos**. Custo: **zero**. Os dados ficam em uma planilha sua no Google Drive.
+Estimated time: **5 minutes**. Cost: **zero**. The data lives in a spreadsheet in your own Google
+Drive.
 
-## 1. Criar a planilha
+Google menu labels are given in Portuguese, matching the account this was set up on.
 
-1. Vá em [sheets.google.com](https://sheets.google.com) e crie uma planilha nova.
-2. Nomeie como `Primeiro Saque - Reservas`.
-3. Na primeira linha (linha 1), coloque os cabeçalhos, cada um em uma coluna:
+> **If you already have this running:** the `doPost` below is a hardened replacement for the
+> original. It fixes a live formula-injection vulnerability
+> ([F1](docs/security-privacy.md#f1--spreadsheet-formula-injection-fixed)) and adds server-side
+> validation. Replace the script and create a **new deployment**.
+
+## 1. Create the spreadsheet
+
+1. Go to [sheets.google.com](https://sheets.google.com) and create a new spreadsheet.
+2. Name it `Primeiro Saque - Reservas`.
+3. Put these headers in row 1, one per column:
 
 ```
 timestamp | nome | whatsapp | raquetes | qtd_raquetes | urgencia | bairro | valor_total | user_agent
 ```
 
-## 2. Colar o script
+The `user_agent` column is kept for historical rows only. It is
+[no longer collected](docs/security-privacy.md#f5--user_agent-collected-without-purpose) and new
+rows will leave it blank.
 
-1. Na planilha, menu **Extensões → Apps Script**.
-2. Apague o código padrão e cole isto:
+## 2. Paste the script
+
+In the spreadsheet: **Extensões → Apps Script**. Delete the default code and paste this:
 
 ```javascript
+/**
+ * Primeiro Saque — reservation intake.
+ *
+ * This is the real trust boundary. The landing page runs the same validation,
+ * but anyone can POST here directly, so nothing the client says is believed.
+ */
+
+var MAX_LENGTHS = { nome: 80, whatsapp: 20, raquetes: 200, urgencia: 40, bairro: 60 };
+var VALID_URGENCY = ['Esta semana', 'Próximas 2 semanas', 'Só avaliando'];
+var MAX_RACKETS = 4;
+var DUPLICATE_WINDOW_MS = 60 * 1000;
+
+/**
+ * Neutralise spreadsheet formula injection.
+ *
+ * Sheets evaluates any cell starting with = + - @, so a submitted name like
+ * =IMPORTXML(...) would run with the owner's permissions and could exfiltrate
+ * the whole lead list. Prefixing with an apostrophe forces text.
+ *
+ * The raw string is tested, not a trimmed one: trimming would strip the very
+ * leading tab that makes a tab-prefixed value dangerous.
+ */
+function sanitize(value, maxLength) {
+  var s = String(value == null ? '' : value).slice(0, maxLength || 200);
+  if (/^[=+\-@\t\r]/.test(s) || /^[=+\-@]/.test(s.trim())) return "'" + s;
+  return s;
+}
+
+function jsonOut(payload) {
+  return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(
+    ContentService.MimeType.JSON
+  );
+}
+
+/** Reject a payload that repeats an identical one within the last minute. */
+function isDuplicate(fingerprint) {
+  var cache = CacheService.getScriptCache();
+  var key =
+    'fp_' +
+    Utilities.base64Encode(
+      Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, fingerprint)
+    ).slice(0, 40);
+  if (cache.get(key)) return true;
+  cache.put(key, '1', Math.ceil(DUPLICATE_WINDOW_MS / 1000));
+  return false;
+}
+
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    if (!e || !e.postData || !e.postData.contents) {
+      return jsonOut({ ok: false, error: 'empty request' });
+    }
+
+    var data = JSON.parse(e.postData.contents);
+
+    // Honeypot: a real person never sees this field, so any value means a bot.
+    // Answer 200 so the caller learns nothing from being rejected.
+    if (String(data.website || '').trim() !== '') {
+      return jsonOut({ ok: true });
+    }
+
+    var nome = String(data.nome || '').trim();
+    var whatsapp = String(data.whatsapp || '').trim();
+    var raquetes = String(data.raquetes || '').trim();
+    var bairro = String(data.bairro || '').trim();
+    var urgencia = String(data.urgencia || '').trim();
+
+    if (nome.length < 2 || bairro.length < 2 || !raquetes) {
+      return jsonOut({ ok: false, error: 'missing required fields' });
+    }
+
+    var digits = whatsapp.replace(/\D/g, '');
+    if (digits.length !== 10 && digits.length !== 11) {
+      return jsonOut({ ok: false, error: 'invalid phone' });
+    }
+
+    if (VALID_URGENCY.indexOf(urgencia) === -1) {
+      return jsonOut({ ok: false, error: 'invalid urgency' });
+    }
+
+    var count = Number(data.qtd_raquetes) || raquetes.split(',').length;
+    if (count < 1 || count > MAX_RACKETS) {
+      return jsonOut({ ok: false, error: 'invalid racket count' });
+    }
+
+    if (isDuplicate(nome + '|' + digits + '|' + raquetes)) {
+      return jsonOut({ ok: true, duplicate: true });
+    }
+
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
     sheet.appendRow([
       data.timestamp || new Date().toISOString(),
-      data.nome || '',
-      data.whatsapp || '',
-      data.raquetes || '',
-      data.qtd_raquetes || 0,
-      data.urgencia || '',
-      data.bairro || '',
-      data.valor_total || 0,
-      data.user_agent || ''
+      sanitize(nome, MAX_LENGTHS.nome),
+      sanitize(whatsapp, MAX_LENGTHS.whatsapp),
+      sanitize(raquetes, MAX_LENGTHS.raquetes),
+      count,
+      sanitize(urgencia, MAX_LENGTHS.urgencia),
+      sanitize(bairro, MAX_LENGTHS.bairro),
+      Number(data.valor_total) || 0,
+      '', // user_agent: no longer collected
     ]);
-    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
+
+    return jsonOut({ ok: true });
   } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ok:false, error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ ok: false, error: String(err) });
   }
+}
+
+/** Nothing is served over GET. */
+function doGet() {
+  return jsonOut({ ok: true, service: 'primeiro-saque-intake' });
 }
 ```
 
-3. Salve (ícone de disquete ou Ctrl+S). Nomeie o projeto como `Primeiro Saque`.
+Save (Ctrl+S) and name the project `Primeiro Saque`.
 
-## 3. Publicar como Web App
+## 3. Deploy as a Web App
 
-1. Botão azul **Implantar → Nova implantação**.
-2. Clique na engrenagem ao lado de "Selecionar tipo" → **App da Web**.
-3. Preencha:
-   - Descrição: `Reservas LP`
-   - Executar como: **Eu** (seu email)
-   - Quem pode acessar: **Qualquer pessoa**
-4. Clique **Implantar**.
-5. Autorize o acesso (pode aparecer aviso "app não verificado" — clique em "Avançado → Acessar projeto não seguro", é seu próprio script).
-6. Copie a **URL do app da Web** (termina em `/exec`).
+1. **Implantar → Nova implantação**.
+2. Click the gear next to "Selecionar tipo" → **App da Web**.
+3. Fill in:
+   - Description: `Reservas LP`
+   - Execute as: **Eu** (your account)
+   - Who has access: **Qualquer pessoa**
+4. **Implantar**.
+5. Authorise. The "app não verificado" warning is expected — it is your own script.
+   Click _Avançado → Acessar projeto não seguro_.
+6. Copy the **Web App URL** (it ends in `/exec`).
 
-## 4. Conectar na LP
+> "Qualquer pessoa" is required: the request comes from a visitor's browser with no Google session.
+> The endpoint is public by design — see
+> [F4](docs/security-privacy.md#f4--open-unauthenticated-write-endpoint) for how it is defended.
 
-Abra [index.html](index.html), procure esta linha (perto do final do arquivo, dentro do `<script>`):
+## 4. Connect it to the page
+
+In [index.html](index.html), inside the module script near the end of the file:
 
 ```javascript
-const ENDPOINT = ''; // <-- cole aqui a URL do Google Apps Script Web App quando tiver
+const ENDPOINT = 'https://script.google.com/macros/s/.../exec';
 ```
 
-Cole a URL entre as aspas. Pronto.
+Paste your URL between the quotes.
 
-## 5. Testar
+## 5. Test it
 
-1. Abra a LP no navegador.
-2. Clique em qualquer "Reservar meu teste" / "Quero testar".
-3. Preencha o formulário e envie.
-4. Confira a planilha — a linha deve aparecer em poucos segundos.
+1. Serve the site: `npm run serve`, then open <http://localhost:8000>.
+2. Click any "Reservar meu teste" / "Quero testar".
+3. Fill in the form and submit — take more than 2.5 seconds, or the
+   [timing check](docs/security-privacy.md#endpoint-hardening) will treat you as a bot and silently
+   discard it.
+4. Check the spreadsheet. The row should appear within seconds.
 
-## Observações
+Worth testing the hardening too: submit `=1+1` as the name. It should be rejected in the browser,
+and if forced through, land in the sheet as text prefixed with an apostrophe rather than as a
+formula.
 
-- **Se atualizar o script depois**, precisa criar uma **Nova implantação** (não só salvar). A URL muda a cada nova implantação — atualize no `index.html`.
-- **Sem endpoint configurado**, o form continua funcionando em modo simulado (loga no console do navegador e mostra tela de sucesso) — útil pra desenvolver.
-- Enquanto a planilha cresce, dá pra criar tabela dinâmica pra ver: % que escolheu cada raquete, distribuição por bairro, % de cada tier (1/2/3+ raquetes), % por urgência.
+## Notes
+
+- **Editing the script requires a new deployment.** Saving is not enough, and each new deployment
+  gets a new URL that must be pasted into `index.html`. This is a silent failure mode: the old
+  deployment simply stops receiving with no visible error.
+- **With `ENDPOINT` empty**, the form runs in simulated mode — logs to the console and shows the
+  success screen. Useful for local development.
+- **The page cannot see whether the write succeeded.** Apps Script sends no CORS headers, so the
+  request goes out with `mode: 'no-cors'` and the response is opaque. Submissions can fail
+  silently, which is why the recorded count is treated as a floor. See
+  [architecture.md](docs/architecture.md#known-limitations).
+- **To analyse the data**, do not read the sheet by hand — export it and run
+  `npm run aggregate`, which produces counts with no personal data. See [data/README.md](data/README.md).
