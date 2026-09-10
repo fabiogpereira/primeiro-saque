@@ -539,11 +539,10 @@
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
 <span class="text-lg font-bold text-[#DFFF00] font-headline uppercase tracking-tighter">Primeiro Saque</span>
-<p class="text-[#E5E2E1]/60 font-label text-sm">© 2024 Primeiro Saque. Todos os direitos reservados.</p>
+<p class="text-[#E5E2E1]/60 font-label text-sm">© 2026 Primeiro Saque. Todos os direitos reservados.</p>
 </div>
 <div class="flex gap-8 font-label text-sm tracking-wide">
-<a class="text-[#E5E2E1]/60 hover:text-[#DFFF00] transition-colors" href="#">Termos de Uso</a>
-<a class="text-[#E5E2E1]/60 hover:text-[#DFFF00] transition-colors" href="#">Privacidade</a>
+<a class="text-[#E5E2E1]/60 hover:text-[#DFFF00] transition-colors" href="/privacidade/">Privacidade</a>
 </div>
 </div>
 </footer>
@@ -560,6 +559,11 @@
 <h3 class="text-3xl md:text-4xl font-headline font-black uppercase tracking-tighter mb-2">Teste em quadra antes de decidir</h3>
 <p class="text-on-surface-variant text-sm mb-8">Preencha os dados e montamos sua reserva. Pagamento só após confirmação.</p>
 <form id="reserve-form" class="space-y-6">
+<!-- Honeypot: invisible to people, tempting to bots. Any value here means the
+     submission is discarded silently. See docs/security-privacy.md. -->
+<div class="hidden" aria-hidden="true">
+<label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"/></label>
+</div>
 <div>
 <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Nome completo</label>
 <input name="nome" type="text" required class="w-full bg-surface px-4 py-3 border border-[#454932]/30 focus:border-[#DFFF00] focus:outline-none text-on-surface font-body"/>
@@ -623,6 +627,7 @@
 Confirmar solicitação
 </button>
 <p class="text-center text-[10px] uppercase tracking-widest text-on-surface-variant opacity-60">Sem burocracia · Sem fidelidade · Sem cobrança agora</p>
+<p class="text-center text-[11px] leading-relaxed text-on-surface-variant opacity-70">Ao enviar, você concorda que usaremos seus dados apenas para entrar em contato sobre esta solicitação. Não compartilhamos com terceiros. <a href="/privacidade/" class="underline hover:text-[#DFFF00] transition-colors">Política de Privacidade</a>.</p>
 </form>
 </div>
 <!-- Success state -->
@@ -638,11 +643,20 @@ Fechar
 </div>
 </div>
 </div>
-<script>
-(function(){
-  const PRICES = { 1: 250, 2: 450, 3: 600 };
-  const PER_EXTRA = 200; // 4+ raquetes: 600 + 200 por raquete adicional
-  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyMgqZaqDY1uRQtJDuqD_QVxX7vhIYNGsLVY2QO-VD53gG8BS-ntkf5TnRM5KnpZExCJw/exec'; // <-- cole aqui a URL do Google Apps Script Web App quando tiver
+<script type="module">
+import {
+  calcPrice,
+  priceDetail,
+  maskPhone,
+  validateReservation,
+  isLikelyBot,
+  buildPayload,
+} from './assets/js/core.js';
+
+(function () {
+  // Google Apps Script Web App URL. See backend-setup.md.
+  // Empty string keeps the form in simulated mode (logs to console).
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyMgqZaqDY1uRQtJDuqD_QVxX7vhIYNGsLVY2QO-VD53gG8BS-ntkf5TnRM5KnpZExCJw/exec';
 
   const modal = document.getElementById('reserve-modal');
   const formContainer = document.getElementById('reserve-form-container');
@@ -654,7 +668,11 @@ Fechar
   const totalDetail = document.getElementById('total-detail');
   const whatsappInput = document.getElementById('whatsapp-input');
 
-  function openModal(preselect){
+  // Set when the modal opens, so we can measure how long the fill took.
+  let openedAt = 0;
+
+  function openModal(preselect) {
+    openedAt = Date.now();
     formContainer.classList.remove('hidden');
     successContainer.classList.add('hidden');
     modal.classList.remove('hidden');
@@ -662,42 +680,36 @@ Fechar
     document.body.style.overflow = 'hidden';
     if (preselect) {
       const cb = form.querySelector(`input[name="raquetes"][value="${preselect}"]`);
-      if (cb && !cb.checked) { cb.checked = true; updateTotal(); }
+      if (cb && !cb.checked) {
+        cb.checked = true;
+        updateTotal();
+      }
     }
   }
-  function closeModal(){
+
+  function closeModal() {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
     document.body.style.overflow = '';
   }
 
-  function calcPrice(n){
-    if (n <= 0) return 0;
-    if (n <= 3) return PRICES[n];
-    return PRICES[3] + (n - 3) * PER_EXTRA;
+  function showSuccess() {
+    formContainer.classList.add('hidden');
+    successContainer.classList.remove('hidden');
   }
-  function updateTotal(){
+
+  function selectedRackets() {
+    return [...form.querySelectorAll('input[name="raquetes"]:checked')].map((c) => c.value);
+  }
+
+  function updateTotal() {
     const checked = form.querySelectorAll('input[name="raquetes"]:checked').length;
-    const price = calcPrice(checked);
-    totalValue.textContent = 'R$ ' + price;
-    if (checked === 0) totalDetail.textContent = 'Selecione ao menos 1 raquete';
-    else if (checked === 1) totalDetail.textContent = '1 raquete · teste único';
-    else if (checked === 2) totalDetail.textContent = '2 raquetes · economia de R$ 50';
-    else if (checked === 3) totalDetail.textContent = '3 raquetes · economia de R$ 150';
-    else totalDetail.textContent = checked + ' raquetes · pacote estendido';
+    totalValue.textContent = 'R$ ' + calcPrice(checked);
+    totalDetail.textContent = priceDetail(checked);
   }
 
-  function maskPhone(v){
-    v = v.replace(/\D/g,'').slice(0,11);
-    if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{0,4}).*/,'($1) $2-$3');
-    if (v.length > 6) return v.replace(/(\d{2})(\d{4})(\d{0,4}).*/,'($1) $2-$3');
-    if (v.length > 2) return v.replace(/(\d{2})(\d{0,5}).*/,'($1) $2');
-    if (v.length > 0) return v.replace(/(\d{0,2}).*/,'($1');
-    return '';
-  }
-
-  // Abrir via qualquer CTA
-  document.querySelectorAll('[data-open-reserve]').forEach(el => {
+  // Open via any CTA
+  document.querySelectorAll('[data-open-reserve]').forEach((el) => {
     el.addEventListener('click', (e) => {
       e.preventDefault();
       const card = el.closest('[data-racket]');
@@ -705,42 +717,59 @@ Fechar
     });
   });
 
-  // Fechar
-  document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
+  // Close
+  document.querySelectorAll('[data-close-modal]').forEach((el) =>
+    el.addEventListener('click', closeModal)
+  );
   document.querySelector('[data-modal-backdrop]').addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
 
-  // Total ao vivo
-  form.querySelectorAll('input[name="raquetes"]').forEach(cb => cb.addEventListener('change', updateTotal));
+  // Live total
+  form
+    .querySelectorAll('input[name="raquetes"]')
+    .forEach((cb) => cb.addEventListener('change', updateTotal));
 
-  // Máscara WhatsApp
-  whatsappInput.addEventListener('input', (e) => { e.target.value = maskPhone(e.target.value); });
+  // WhatsApp mask
+  whatsappInput.addEventListener('input', (e) => {
+    e.target.value = maskPhone(e.target.value);
+  });
 
   // Submit
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorBox.classList.add('hidden');
-    const raquetes = [...form.querySelectorAll('input[name="raquetes"]:checked')].map(c => c.value);
-    if (raquetes.length === 0) {
-      errorBox.textContent = 'Selecione ao menos uma raquete para testar.';
+
+    const input = {
+      nome: form.nome.value,
+      whatsapp: form.whatsapp.value,
+      raquetes: selectedRackets(),
+      urgencia: form.urgencia.value,
+      bairro: form.bairro.value,
+    };
+
+    // Bots get the success screen, no explanation and no write.
+    if (isLikelyBot({ honeypot: form.website.value, elapsedMs: Date.now() - openedAt })) {
+      showSuccess();
+      return;
+    }
+
+    const { valid, errors } = validateReservation(input);
+    if (!valid) {
+      errorBox.textContent = Object.values(errors)[0];
       errorBox.classList.remove('hidden');
       return;
     }
-    const data = {
-      nome: form.nome.value.trim(),
-      whatsapp: form.whatsapp.value.trim(),
-      raquetes: raquetes.join(', '),
-      qtd_raquetes: raquetes.length,
-      urgencia: form.urgencia.value,
-      bairro: form.bairro.value.trim(),
-      valor_total: calcPrice(raquetes.length),
-      timestamp: new Date().toISOString(),
-      user_agent: navigator.userAgent,
-    };
+
+    const data = buildPayload(input);
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando...';
     try {
       if (ENDPOINT) {
+        // no-cors: Apps Script does not send CORS headers, so the response is
+        // opaque and a server-side failure is invisible here. Known limitation,
+        // documented in docs/results.md — recorded submissions are a floor.
         await fetch(ENDPOINT, {
           method: 'POST',
           mode: 'no-cors',
@@ -749,17 +778,16 @@ Fechar
         });
       } else {
         console.log('[Reserva simulada — endpoint não configurado]', data);
-        await new Promise(r => setTimeout(r, 600));
+        await new Promise((r) => setTimeout(r, 600));
       }
-      formContainer.classList.add('hidden');
-      successContainer.classList.remove('hidden');
+      showSuccess();
       if (typeof gtag === 'function') {
         gtag('event', 'form_submit', {
           value: data.valor_total,
           currency: 'BRL',
           qtd_raquetes: data.qtd_raquetes,
           urgencia: data.urgencia,
-          bairro: data.bairro
+          bairro: data.bairro,
         });
       }
       form.reset();
@@ -784,10 +812,12 @@ Fechar
       const icon = mobileBtn.querySelector('.material-symbols-outlined');
       icon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
     });
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      mobileBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
-    }));
+    mobileMenu.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
+      })
+    );
   }
 })();
 </script>
