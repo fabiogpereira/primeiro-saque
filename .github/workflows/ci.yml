@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, format and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Test
+        run: npm test
+
+  privacy:
+    name: No personal data in the repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # data/private/ is gitignored. If a raw export is ever force-added,
+      # this fails the build before it reaches the public repository.
+      - name: Assert no raw lead exports are tracked
+        run: |
+          if git ls-files --error-unmatch data/private 2>/dev/null; then
+            echo "::error::A file under data/private/ is tracked by git. Raw lead data must never be committed."
+            exit 1
+          fi
+          echo "OK: data/private/ is untracked."
+
+      - name: Assert no Brazilian phone numbers in tracked files
+        run: |
+          # Public files only. Test fixtures use the reserved 9000x range.
+          if grep -rEn '\(\d{2}\) 9[0-9]{4}-[0-9]{4}' \
+               --include='*.html' --include='*.json' --include='*.md' \
+               --exclude-dir=node_modules --exclude-dir=.git . \
+             | grep -v '99999-9999' | grep -v '9000-000' | grep -v '90000-000'; then
+            echo "::error::A phone-shaped value was found in a tracked file."
+            exit 1
+          fi
+          echo "OK: no phone numbers found."

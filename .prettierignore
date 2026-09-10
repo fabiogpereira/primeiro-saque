@@ -1,0 +1,10 @@
+node_modules/
+images/
+assets/docs/
+data/
+index.html
+case-study/index.html
+privacidade/index.html
+
+# The owner's working brief - left exactly as written
+BRIEFING.md
